@@ -92,6 +92,12 @@ class projectsController extends Controller
                 'future' => $project->future
             ];
         }
+        $data=[
+            "status"=>200,
+            "message"=>'Data Retrieved Successfully'
+        ];
+
+        return response()->json($data, 200);
     }
 
     function concatenateArray(array $strings, $separator = '|') {
