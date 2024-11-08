@@ -56,6 +56,32 @@ class projectsController extends Controller
                     'name' => $this->splitArray($project->tag->name),
                     'image' => $this->splitArray($project->tag->image),
                 ],
+                'objectives' => $this->splitArray($project->objectives),
+                'subject' => [
+                    'initiator'=> $this->splitArray($project->subject->initiator),
+                    'leader'=> $this->splitArray($project->subject->leader),
+                    'members'=> $this->splitArray($project->subject->members)
+                ],
+                'environment' => [
+                    'nature'=> $this->splitArray($project->environment->nature),
+                    'industry'=> $this->splitArray($project->environment->industry),
+                    'government'=> $this->splitArray($project->environment->government)
+                ],
+                'resources' => [
+                    'human'=> $this->splitArray($project->resource->human),
+                    'financial'=> $this->splitArray($project->resource->financial),
+                    'technical'=> $this->splitArray($project->resource->technical)
+                ],
+                'mechanism' => [
+                    'planning' => $project->mechanism->planning,
+                    'design' => $project->mechanism->design,
+                    'installation' => $project->mechanism->installation,
+                    'testing' => $project->mechanism->testing,
+                    'monitoring' => $project->mechanism->monitoring
+                ],
+                'content' => $project->content,
+                'waypoints' => $this->splitArray($project->waypoints),
+
             ];
         }
     }
@@ -202,7 +228,7 @@ class projectsController extends Controller
             $projects->image=$request->image;
             $projects->objectives=$this->concatenateArray($request->objectives);
             $projects->content=$request->content;
-            $projects->waypoint=$this->concatenateArray($request->waypoint);
+            $projects->waypoints=$this->concatenateArray($request->waypoint);
             $projects->launched=$request->launched;
             $projects->proponent=$request->proponent;
             $projects->progress=$request->progress;

@@ -20,7 +20,7 @@ class Project extends Model
         'image',
         'objectives',
         'content',
-        'waypoint',
+        'waypoints',
         'launched',
         'proponent',
         'progress',

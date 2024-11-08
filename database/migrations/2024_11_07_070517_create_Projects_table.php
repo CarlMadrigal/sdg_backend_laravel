@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('objectives');
             $table->string('content');
-            $table->string('waypoint');
+            $table->string('waypoints');
             $table->string('launched');
             $table->string('proponent');
             $table->string('progress');

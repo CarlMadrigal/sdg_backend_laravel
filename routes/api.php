@@ -9,11 +9,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/projects', [projectsController::class,'index'] );
+Route::get('projects', [projectsController::class,'index'] );
 
-Route::post('/projects', [projectsController::class,'upload'] );
+Route::post('projects', [projectsController::class,'upload'] );
 
-Route::put('/projects/edit/{id}', [projectsController::class,'edit'] );
+Route::put('projects/edit/{id}', [projectsController::class,'edit'] );
 
-Route::delete('/projects/delete/{id}', [projectsController::class,'delete'] );
+Route::delete('projects/delete/{id}', [projectsController::class,'delete'] );
 
