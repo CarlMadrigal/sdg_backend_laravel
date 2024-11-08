@@ -81,7 +81,15 @@ class projectsController extends Controller
                 ],
                 'content' => $project->content,
                 'waypoints' => $this->splitArray($project->waypoints),
-
+                'launched' => $project->launched,
+                'proponent' => $project->proponent,
+                'problems' => $project->problems,
+                'solution' => $project->solution,
+                'completion' => $project->completion,
+                'impact' => $this->splitArray($project->impact),
+                'output' => $project->output,
+                'costing' => $project->costing,
+                'future' => $project->future
             ];
         }
     }
