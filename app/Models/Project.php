@@ -28,28 +28,28 @@ class Project extends Model
         'solutions',
         'completion',
         'impact',
-        'output',
+        'output',   
         'costing',
         'future',
     ];
 
     public function tag(){
-        return $this->hasOne(Tag::class);
+        return $this->belongsTo(Tag::class);
     }
 
     public function subject(){
-        return $this->hasOne(Subject::class);
+        return $this->belongsTo(Subject::class);
     }
 
     public function environment(){
-        return $this->hasOne(Environment::class);
+        return $this->belongsTo(Environment::class);
     }
 
     public function resource(){
-        return $this->hasOne(Resource::class);
+        return $this->belongsTo(Resource::class);
     }
 
     public function mechanism(){
-        return $this->hasOne(Mechanism::class);
+        return $this->belongsTo(Mechanism::class);
     }
 }

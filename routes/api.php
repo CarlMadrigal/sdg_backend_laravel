@@ -17,3 +17,6 @@ Route::put('projects/edit/{id}', [projectsController::class,'edit'] );
 
 Route::delete('projects/delete/{id}', [projectsController::class,'delete'] );
 
+/*Route::get('projects', function () {
+    return 'I am working';
+});*/
