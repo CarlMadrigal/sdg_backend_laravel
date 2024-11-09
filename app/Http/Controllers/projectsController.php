@@ -5,41 +5,27 @@ use App\Models\Tag;
 use App\Models\Project;
 use App\Models\Subject;
 use App\Models\Resource;
+use App\Models\Mechanism;
 use App\Models\Environment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Mechanism;
 use Illuminate\Support\Facades\Validator;
 
 
 class projectsController extends Controller
 {
-    
+    //--------------------------- index and upload
     function splitArray($concatenatedString, $separator = '|') {
+        if (strpos($concatenatedString, $separator) === false) {
+            return $concatenatedString;
+        }
         return explode($separator, $concatenatedString);
     }
     
+    
     public function index(){
-        // $projects = Project::select(['id','title','logo', 'abstract',
-        //     'overview',
-        //     'image',
-        //     'launchd',
-        //     'proponent',
-        //     'progress',
-        //     'problems',
-        //     'solution',
-        //     'completion',
-        //     'output',
-        //     'costing',
-        //     'future'])->get();
-            
-        // $data =[
-        //     'projects' => $projects
 
-        // ];
-        // return response()->json($data, 200);
-
-        $projects = Project::all();
+        $projects = Project::with('tag', 'subject', 'environment', 'resource', 'mechanism')->get();
 
         $container = [];
         foreach ($projects as $project) {
@@ -51,7 +37,7 @@ class projectsController extends Controller
                 'abstract' => $project->abstract,
                 'overview' => $project->overview,             
                 'image' => $project->image,          
-                'link' => "/sdg/project/{$project->id}/{$project->title}",
+                'link' => "/sdg/project/{$project->id}/" . urlencode($project->title),
                 'tags' => [
                     'name' => $this->splitArray($project->tag->name),
                     'image' => $this->splitArray($project->tag->image),
@@ -84,7 +70,7 @@ class projectsController extends Controller
                 'launched' => $project->launched,
                 'proponent' => $project->proponent,
                 'problems' => $project->problems,
-                'solution' => $project->solution,
+                'solutions' => $project->solutions,
                 'completion' => $project->completion,
                 'impact' => $this->splitArray($project->impact),
                 'output' => $project->output,
@@ -92,21 +78,20 @@ class projectsController extends Controller
                 'future' => $project->future
             ];
         }
-        $data=[
-            "status"=>200,
-            "message"=>'Data Retrieved Successfully'
-        ];
 
-        return response()->json($data, 200);
+        return response()->json($container, 200);
     }
 
-    function concatenateArray(array $strings, $separator = '|') {
+    function concatenateArray($strings, $separator = '|') {
+        if (is_string($strings)) {
+            return $strings;
+        }
+
         return implode($separator, $strings);
     }
 
     public function upload(Request $request){
-        
-        dd($request->all());
+     
         $validator= Validator::make($request->all(),
         [
             'title'=>'required',
@@ -133,7 +118,7 @@ class projectsController extends Controller
             'mechanism_testing' => 'required',
             'mechanism_monitoring' => 'required',
             'content'=>'required', 
-            'waypoint'=>'required', 
+            'waypoints'=>'required', 
             'launched'=>'required',
             'proponent'=>'required',
             'progress'=>'required',
@@ -169,7 +154,7 @@ class projectsController extends Controller
             'mechanism_testing.required' => 'Mechanism Testing is required',
             'mechanism_monitoring.required' => 'Mechanism Monitoring is required',
             'content.required' => 'Content is required',
-            'waypoint.required' => 'Waypoint is required',
+            'waypoints.required' => 'Waypoints is required',
             'launched.required' => 'Launched is required',
             'proponent.required' => 'Proponent is required',
             'progress.required' => 'Progress is required',
@@ -184,9 +169,9 @@ class projectsController extends Controller
         
         if($validator->fails()){
             $message = $validator->messages()->all()[0];
-            $data=[
-                "status"=>422,
-                "message"=>$validator->$message
+            $data = [
+                "status" => 422,
+                "message" => $message
             ];
             return response()->json($data, 422);
 
@@ -228,42 +213,70 @@ class projectsController extends Controller
             ];
             $mechanism = Mechanism::create($mechanism_form);
 
-            $projects =  new Project;
-            $projects->tags_id=$tag->id;
-            $projects->subject_id=$subject->id;
-            $projects->environment_id=$environment->id;
-            $projects->resources_id=$resources->id;
-            $projects->mechanism_id=$mechanism->id;
-            $projects->title=$request->title;
-            $projects->logo=$request->logo; 
-            $projects->description=$request->description;
-            $projects->abstract=$request->abstract;
-            $projects->overview=$request->overview;
-            $projects->image=$request->image;
-            $projects->objectives=$this->concatenateArray($request->objectives);
-            $projects->content=$request->content;
-            $projects->waypoints=$this->concatenateArray($request->waypoint);
-            $projects->launched=$request->launched;
-            $projects->proponent=$request->proponent;
-            $projects->progress=$request->progress;
-            $projects->problems=$request->problems;
-            $projects->solutions=$request->solutions;
-            $projects->completion=$request->completion;
-            $projects->impact=$this->concatenateArray($request->impact);
-            $projects->output=$request->output;
-            $projects->costing=$request->costing;
-            $projects->future=$request->future;
-            $projects->save();
+            $project_form = [
+                'tags_id' => $tag->id,
+                'subject_id' => $subject->id,
+                'environment_id' => $environment->id,
+                'resources_id' => $resources->id,
+                'mechanism_id' => $mechanism->id,
+                'title' => $request->title,
+                'logo' => $request->logo,
+                'description' => $request->description,
+                'abstract' => $request->abstract,
+                'overview' => $request->overview,
+                'image' => $request->image,
+                'objectives' => $this->concatenateArray($request->objectives),
+                'content' => $request->content,
+                'waypoints' => $this->concatenateArray($request->waypoints),
+                'launched' => $request->launched,
+                'proponent' => $request->proponent,
+                'progress' => $request->progress,
+                'problems' => $request->problems,
+                'solutions' => $request->solutions,
+                'completion' => $request->completion,
+                'impact' => $this->concatenateArray($request->impact),
+                'output' => $request->output,
+                'costing' => $request->costing,
+                'future' => $request->future,
+            ]; 
+            Project::create($project_form);
 
-            $data=[
+            // $projects =  new Project;
+            // $projects->tags_id=$tag->id;
+            // $projects->subject_id=$subject->id;
+            // $projects->environment_id=$environment->id;
+            // $projects->resources_id=$resources->id;
+            // $projects->mechanism_id=$mechanism->id;
+            // $projects->title=$request->title;
+            // $projects->logo=$request->logo; 
+            // $projects->description=$request->description;
+            // $projects->abstract=$request->abstract;
+            // $projects->overview=$request->overview;
+            // $projects->image=$request->image;
+            // $projects->objectives=$this->concatenateArray($request->objectives);
+            // $projects->content=$request->content;
+            // $projects->waypoints=$this->concatenateArray($request->waypoint);
+            // $projects->launched=$request->launched;
+            // $projects->proponent=$request->proponent;
+            // $projects->progress=$request->progress;
+            // $projects->problems=$request->problems;
+            // $projects->solutions=$request->solutions;
+            // $projects->completion=$request->completion;
+            // $projects->impact=$this->concatenateArray($request->impact);
+            // $projects->output=$request->output;
+            // $projects->costing=$request->costing;
+            // $projects->future=$request->future;
+            // $projects->save();
+
+            $data = [
                 "status"=>200,
                 "message"=>'Data Uploaded Successfully'
             ];
 
             return response()->json($data, 200);
-
         }
     }
+    
     public function edit(Request $request, $id){
         $validator= Validator::make($request->all(),
         [
@@ -348,3 +361,4 @@ class projectsController extends Controller
         return response()->json($data, 200);
     }
 }
+    

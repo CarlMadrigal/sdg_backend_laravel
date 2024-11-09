@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //cascade not include onDelete() in foreign keys
+        //---------------------
         Schema::create('Projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tags_id');
-            $table->foreignId('subject_id');
-            $table->foreignId('environment_id');
-            $table->foreignId('resources_id');
-            $table->foreignId('mechanism_id');
+            $table->foreignId('tags_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('environment_id')->constrained()->onDelete('cascade');
+            $table->foreignId('resources_id')->constrained()->onDelete('cascade');
+            $table->foreignId('mechanism_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('logo');
             $table->string('description');

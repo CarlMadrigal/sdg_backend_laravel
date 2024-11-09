@@ -33,23 +33,28 @@ class Project extends Model
         'future',
     ];
 
-    public function tag(){
-        return $this->hasOne(Tag::class);
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class, 'tags_id');
     }
 
-    public function subject(){
-        return $this->hasOne(Subject::class);
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 
-    public function environment(){
-        return $this->hasOne(Environment::class);
+    public function environment()
+    {
+        return $this->belongsTo(Environment::class, 'environment_id');
     }
 
-    public function resource(){
-        return $this->hasOne(Resource::class);
+    public function resource()
+    {
+        return $this->belongsTo(Resource::class, 'resources_id');
     }
 
-    public function mechanism(){
-        return $this->hasOne(Mechanism::class);
+    public function mechanism()
+    {
+        return $this->belongsTo(Mechanism::class, 'mechanism_id');
     }
 }

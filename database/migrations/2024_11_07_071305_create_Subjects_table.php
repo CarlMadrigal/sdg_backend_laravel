@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Mechanism', function (Blueprint $table) {
+        Schema::create('Subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('plannig');
-            $table->string('design');
-            $table->string('installation');
-            $table->string('testing');
-            $table->string('monitoring');
+            $table->string('initiator');
+            $table->string('leader');
+            $table->string('members');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Mechanism');
+        Schema::dropIfExists('Subjects');
     }
 };

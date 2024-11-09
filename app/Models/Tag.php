@@ -14,4 +14,5 @@ class Tag extends Model
     public function project(){
         return $this->belongsTo(Project::class, 'tags_id', 'id');
     }
+    
 }
